@@ -1,0 +1,132 @@
+---
+title: "twitter tm"
+author: "Faris Dzikrur R"
+date: "20/08/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rtweet)
+
+create_token(app = "ahmad husain",
+             consumer_key = "zDLWXvSXNNT8RuWr0ecTS6gXB",
+             consumer_secret = "8PvOsDWHCmbmdZ4nxqQYoyFzNqUSkYfjemLMwoNJHwm80dhpJ5",
+             access_token = "808696831676850178-qm0nuNt5sjy4UOLDK4UW0a0MU4LxZKU",
+             access_secret = "RpumuGLdWlPh9kAF7yKoQQEcgXLqvqWnla4EhDprd9LrJ")
+
+tweets <- search_tweets("manchester united", n=100, include_rts = FALSE, lang = "en")
+```
+
+```{r}
+tweets_text <- tweets[,"text"] 
+  
+write.csv(tweets_text, "tweets.csv")
+```
+
+```{r}
+tweets <- read.csv("tweets.csv")
+```
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+tweets_proces <- tweets %>%
+  distinct(text)
+```
+
+```{r}
+library(textclean)
+
+check_text(tweets_proces$text)
+```
+
+```{r}
+tweets_proces <- tweets_proces %>% 
+  drop_empty_row() %>% 
+  drop_NA()
+
+tweets_proces <- as.character(tweets$text)
+```
+
+```{r}
+tweets_proces <- replace_contraction(tweets_proces)
+```
+
+```{r}
+tweets_proces <- replace_date(tweets_proces, replacement = "")
+```
+
+```{r}
+tweets_proces <- replace_email(tweets_proces)
+```
+
+```{r}
+tweets_proces <- replace_emoji(tweets_proces)
+```
+
+```{r}
+tweets_proces <- replace_emoticon(tweets_proces)
+```
+
+```{r}
+tweets_proces <- replace_grade(tweets_proces)
+```
+
+```{r}
+tweets_proces <- replace_hash(tweets_proces)
+```
+
+```{r}
+tweets_proces <- replace_html(tweets_proces, symbol=FALSE)
+```
+
+```{r}
+tweets_proces <- replace_incomplete(tweets_proces, replacement="")
+```
+
+```{r}
+tweets_proces <- replace_internet_slang(tweets_proces)
+```
+
+```{r}
+tweets_proces <- replace_number(tweets_proces, remove=TRUE)
+```
+
+```{r}
+tweets_proces <- replace_tag(tweets_proces)
+```
+
+```{r}
+tweets_proces <- replace_url(tweets_proces, replacement="")
+```
+
+```{r}
+tweets_proces <- replace_word_elongation(tweets_proces)
+```
+
+```{r}
+library(tokenizers)
+tweets_proces <- tweets_proces %>% 
+  tokenize_words() %>% 
+  as.character()
+
+library(RColorBrewer)
+library(wordcloud)
+wordcloud(tweets_proces,
+         min.freq=1, 
+         max.words = 50, 
+         random.order = FALSE, 
+         colors=brewer.pal(7, "Set2")) 
+```
+
+
+
+
+
+
